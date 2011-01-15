@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+    <meta charset=utf-8 />
+    <title>jsimage all examples</title>
+
+    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.3.2/jquery.min.js"></script>
+    <script type="text/javascript" src="../src/jsimage.js"></script>
+    <script type="text/javascript" src="../src/colorspace.js"></script>
+    <script type="text/javascript">
+               
+        var img0; // make img0 public so I can play with it in firebug more easily
+
+        window.onload = function() {
+            img0 = new JSImage( "img0", "bee.jpg" );
+        }
+
+    </script>
+
+    <!--[if IE]>
+            <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+
+</head>
+<body>
+
+<canvas id="img0">your browser does not support canvas</canvas>
+
+<h2 id="header">canvas point operations demo</h2> 
+ 
+<p>Demonstrates changing contrast, value, saturation, hue, color inversion, and threshold point operations.</p> 
+ 
+<p><em>(I've made some performance increases lately.  Saturation is still not quite right.)</em></p> 
+ 
+    <table cellpadding="4" cellspacing="0"> 
+    <tr> 
+        <th>Value</th> 
+        <th>Contrast</th> 
+        <th>Saturation</th> 
+        <th>Hue</th> 
+        <th>Invert</th> 
+        <th>Threshold</th> 
+    </tr> 
+ 
+    <tr> 
+        <td> 
+            <!-- using onmousedown instead of onclick because it improves perceived performance.
+                 definitely an accessibility problem, though -->
+            <input type="image" src="arrow_up.png" onmousedown="img0.value( img0.canvas, 10 )" /> 
+            <input type="image" src="arrow_down.png" onmousedown="img0.value( img0.canvas, -10 )" /> 
+        </td> 
+        <td> 
+            <input type="image" src="arrow_up.png" onmousedown="img0.contrast( img0.canvas, 1.5)" /> 
+            <input type="image" src="arrow_down.png" onmousedown="img0.contrast( img0.canvas, 0.5)" /> 
+        </td> 
+        <td> 
+            <input type="image" src="arrow_up.png" onmousedown="img0.saturation( img0.canvas, 25 )" /> 
+            <input type="image" src="arrow_down.png" onmousedown="img0.saturation( img0.canvas, -25 )" /> 
+        </td> 
+        <td> 
+            <input type="image" src="arrow_up.png" onmousedown="img0.hue( img0.canvas, 20)" /> 
+            <input type="image" src="arrow_down.png" onmousedown="img0.hue( img0.canvas, -20)" /> 
+        </td> 
+        <td> 
+            <button type="button" onmousedown="img0.invert()">invert</button> 
+        </td> 
+        <td> 
+            <button type="button" onmousedown="img0.threshold( img0.canvas, document.getElementById('t').value )">threshold</button> 
+            <br /> 
+            <input type="text" value="127" maxlength="3" size="3" id="t" /> 
+        </td> 
+    </tr> 
+ 
+    </table> 
+ 
+</body>
+</html>
