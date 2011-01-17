@@ -70,14 +70,14 @@ function JSImage( _canvas_id, _image_src ) {
      * Public instance variables. *
      ******************************/
 
-    this.id = _canvas_id;
-    this.src = _image_src;
-    this.canvas; // reference for the real canvas (not the element)
-    this.width;
-    this.height;
-    this.imagedata;
+    that.id = _canvas_id;
+    that.src = _image_src;
+    that.canvas; // reference for the real canvas (not the element)
+    that.width;
+    that.height;
+    that.imagedata;
 
-    this.canvas = canvas_element.getContext('2d');
+    that.canvas = canvas_element.getContext('2d');
     img = new Image();
     img.src = _image_src; // fetch the image from the server
 
@@ -108,7 +108,7 @@ function JSImage( _canvas_id, _image_src ) {
      *
      * @private
      */
-    this.load_image = function( image_path ) {
+    that.load_image = function( image_path ) {
 
         img = new Image();
         img.src = image_path; // fetch the image from the server
@@ -136,14 +136,14 @@ function JSImage( _canvas_id, _image_src ) {
      *
      * @param cnvs a canvas to draw the current pixel array upon.  uses this canvas if none is specified.
      */
-    this.draw = function( cnvs ) {
+    that.draw = function( cnvs ) {
 
-        if(!cnvs) cnvs = this.canvas;
+        if(!cnvs) cnvs = that.canvas;
 
-        var data = this.imagedata;
+        var data = that.imagedata;
 
         //console.time("putting image data");
-        this.canvas.putImageData( data, 0, 0 );
+        that.canvas.putImageData( data, 0, 0 );
         //console.timeEnd("putting image data");
 
     }
@@ -154,8 +154,8 @@ function JSImage( _canvas_id, _image_src ) {
      *
      * @returns A linear array of the pixels (R,G,B,A,R,G,B,A, ... )
      */
-    this.getrect = function( x, y, w, h ) {
-        return this.canvas.getImageData( x, y, w, h ).data;
+    that.getrect = function( x, y, w, h ) {
+        return that.canvas.getImageData( x, y, w, h ).data;
     }
 
 
@@ -164,7 +164,7 @@ function JSImage( _canvas_id, _image_src ) {
      *
      * @returns An array (R,G,B,A) of the average pixel value
      */
-    this.avg = function( pixels ) {
+    that.avg = function( pixels ) {
 
         var result = new Array(0,0,0,0);
 
@@ -187,7 +187,7 @@ function JSImage( _canvas_id, _image_src ) {
     /**
      * Makes the canvas draggable.
      */
-    this.draggable = function() {
+    that.draggable = function() {
         marquee = new Marquee( that.id, { color: '#000', opacity: 0.6}); 
         marquee.setOnUpdateCallback( upd = function() {
             var xywh = marquee.getCoords();
@@ -212,9 +212,9 @@ function JSImage( _canvas_id, _image_src ) {
      * @param color the color of the histogram bars
      * @param backgorund the color of the background
      */
-    this.histo = function( cnvs, channel, color, background ) {
+    that.histo = function( cnvs, channel, color, background ) {
 
-        if(!cnvs) cnvs = this.canvas;
+        if(!cnvs) cnvs = that.canvas;
 
         var band;
         switch( channel ) {
@@ -225,7 +225,7 @@ function JSImage( _canvas_id, _image_src ) {
         }
 
         cnvs.fillStyle = background;
-        cnvs.fillRect( 0, 0, this.width, this.height );
+        cnvs.fillRect( 0, 0, that.width, that.height );
 
         var histo = new Array();
         var max = 0; // will store the highest value in the histogram
@@ -235,9 +235,9 @@ function JSImage( _canvas_id, _image_src ) {
             histo[i] = 0;
 
         // Build the histo
-        for( var x = 0; x < this.getpixelarray().length; x++ ) {
-            for( var y = 0; y < this.getpixelarray()[0].length; y++ ) {
-                var pix = this.getpixelarray()[x][y];
+        for( var x = 0; x < that.getpixelarray().length; x++ ) {
+            for( var y = 0; y < that.getpixelarray()[0].length; y++ ) {
+                var pix = that.getpixelarray()[x][y];
                 histo[ pix[ band ] ]++;
                 if( max < histo[ pix[ band ] ] ) max = histo[ pix[ band ] ];
             }
@@ -247,10 +247,10 @@ function JSImage( _canvas_id, _image_src ) {
         cnvs.strokeStyle = color;
         for( var i = 0; i < 256; i++ ) {
 
-            var bar_height = parseInt( this.height - ( histo[i] * this.height / max ) );
+            var bar_height = parseInt( that.height - ( histo[i] * that.height / max ) );
 
             cnvs.beginPath();
-            cnvs.moveTo( i, this.height );
+            cnvs.moveTo( i, that.height );
             cnvs.lineTo( i, bar_height );
             cnvs.stroke();
         }
@@ -262,7 +262,7 @@ function JSImage( _canvas_id, _image_src ) {
      *
      * @return bin
      */
-    this.bin = function( histogram, bins ) {
+    that.bin = function( histogram, bins ) {
 
         var bin = new Array();
 
@@ -302,24 +302,22 @@ function JSImage( _canvas_id, _image_src ) {
      *
      * @param cnvs optional canvas to draw the inverted image upon.  uses this canvas if none is provided.
      */
-    this.invert = function( cnvs ) {
+    that.invert = function( cnvs ) {
 
         // use this canvas as default
-        if(!cnvs) cnvs = this.canvas;
+        if(!cnvs) cnvs = that.canvas;
 
-        var data = this.imagedata.data;
+        var data = that.imagedata.data;
 
-        //console.time("Invert");
         for( var i = data.length-1; i >= 0; i-=4 ) {
             data[i - 3] = 255 - data[i - 3]; // R
             data[i - 2] = 255 - data[i - 2]; // G
             data[i - 1] = 255 - data[i - 1]; // B
             // don't invert alpha ;)
         }
-        //console.timeEnd("Invert");
 
         
-        this.draw( cnvs );
+        that.draw( cnvs );
 
     }
 
@@ -330,12 +328,12 @@ function JSImage( _canvas_id, _image_src ) {
      * @param cnvs optional canvas to draw the thresholded image upon.  uses this canvas if none is provided.
      * @param threshold a value from 0..255
      */
-    this.threshold = function( cnvs, t ) {
+    that.threshold = function( cnvs, t ) {
 
         // use this canvas as default
-        if(!cnvs) cnvs = this.canvas;
+        if(!cnvs) cnvs = that.canvas;
 
-        var data = this.imagedata.data;
+        var data = that.imagedata.data;
 
         for( var i = data.length-1; i >= 0; i-=4 ) {
             var b = Math.max( data[i-3],
@@ -344,7 +342,7 @@ function JSImage( _canvas_id, _image_src ) {
             data[i-3] = data[i-2] = data[i-1] = ( b >= t ) ?  255: 0;
         }
 
-        this.draw( cnvs );
+        that.draw( cnvs );
 
     }
 
@@ -354,27 +352,64 @@ function JSImage( _canvas_id, _image_src ) {
      * @param cnvs optional canvas to draw the inverted image upon.  uses this canvas if none is provided.
      * @param h the amount by which to adjust the hue
      */
-    this.hue = function( cnvs, h ) {
+    that.hue = function( cnvs, h ) {
 
         // use this canvas as default
-        if(!cnvs) cnvs = this.canvas;
+        if(!cnvs) cnvs = that.canvas;
 
-        var data = this.imagedata.data;
+        var data = that.imagedata.data;
+        var r = 0;
+        var g = 0;
+        var b = 0;
+
+        var V = 1;
+        var S = 1;
+        var U = Math.cos( h * Math.PI / 180 );
+        var W = Math.sin( h * Math.PI / 180 );
+        var A = .299*V;
+        var B = .587*V;
+        var C = .114*V;
+        var VSW = V*S*W;
+        var VSU = V*S*U;
+
+        console.time( "hue" );
+        for( var i = data.length-1; i >= 0; i-=4 ) {
+            r = data[i-3];
+            g = data[i-2];
+            b = data[i-1];
+
+            data[i-3] = r * ( A+.701*VSU+.168*VSW ) +
+                        g * ( B-.587*VSU+.330*VSW ) +
+                        b * ( C-.114*VSU-.497*VSW ) ;
+
+            data[i-2] = r * ( A-.299*VSU-.328*VSW )+
+                        g * ( B+.413*VSU+.035*VSW )+
+                        b * ( C-.114*VSU+.292*VSW );
+
+            data[i-1] = r * ( A-.3*VSU+1.25*VSW ) +
+                        g * ( B-.588*VSU-1.05*VSW ) +
+                        b * ( C+.886*VSU-.203*VSW );
+        }
+        console.timeEnd( "hue" );
+
+        /*
+        var rgb = [0,0,0,0];
+        var hsv = [0,0,0,0];
 
         for( var i = data.length-1; i >= 0; i-=4 ) {
-            var hsv = cs.rgb_to_hsv(
+            hsv = cs.rgb_to_hsv(
                             data[i-3],
                             data[i-2],
                             data[i-1]);
-            hsv[0] += h;
-            hsv[0] %= 360;
-            var rgb = cs.hsv_to_rgb( hsv[0], hsv[1], hsv[2] );
+            hsv[0] = ( h + hsv[0] ) % 360;
+            rgb = cs.hsv_to_rgb( hsv[0], hsv[1], hsv[2] );
             data[i-3] = rgb[0];
             data[i-2] = rgb[1];
             data[i-1] = rgb[2];
         }
+        */
 
-        this.draw( cnvs );
+        that.draw( cnvs );
 
     }
 
@@ -385,12 +420,12 @@ function JSImage( _canvas_id, _image_src ) {
      * @param cnvs optional canvas to draw the inverted image upon.  uses this canvas if none is provided.
      * @param b the amount by which to adjust the brightness
      */
-    this.value = function( cnvs, v ) {
+    that.value = function( cnvs, v ) {
 
         // use this canvas as default
-        if(!cnvs) cnvs = this.canvas;
+        if(!cnvs) cnvs = that.canvas;
 
-        var data = this.imagedata.data;
+        var data = that.imagedata.data;
 
         for( var i = data.length-1; i >= 0; i-=4 ) {
             var hsv = cs.rgb_to_hsv(
@@ -405,7 +440,7 @@ function JSImage( _canvas_id, _image_src ) {
         }
 
         
-        this.draw( cnvs );
+        that.draw( cnvs );
 
     }
 
@@ -416,12 +451,12 @@ function JSImage( _canvas_id, _image_src ) {
      * @param cnvs optional canvas to draw the inverted image upon.  uses this canvas if none is provided.
      * @param s the amount by which to adjust the saturation
      */
-    this.saturation = function( cnvs, s ) {
+    that.saturation = function( cnvs, s ) {
 
         // use this canvas as default
-        if(!cnvs) cnvs = this.canvas;
+        if(!cnvs) cnvs = that.canvas;
 
-        var data = this.imagedata.data;
+        var data = that.imagedata.data;
 
         for( var i = data.length-1; i >= 0; i-=4 ) {
             var hsv = cs.rgb_to_hsv(
@@ -436,7 +471,7 @@ function JSImage( _canvas_id, _image_src ) {
             data[i-1] = rgb[2];
         }
 
-        this.draw( cnvs );
+        that.draw( cnvs );
 
     }
 
@@ -447,12 +482,12 @@ function JSImage( _canvas_id, _image_src ) {
      * @param cnvs optional canvas to draw the inverted image upon.  uses this canvas if none is provided.
      * @param c the factor by which to increase or decrease the contrast.
      */
-    this.contrast = function( cnvs, c ) {
+    that.contrast = function( cnvs, c ) {
 
         // use this canvas as default
-        if(!cnvs) cnvs = this.canvas;
+        if(!cnvs) cnvs = that.canvas;
 
-        var data = this.imagedata.data;
+        var data = that.imagedata.data;
 
         for( var i = data.length-1; i >= 0; i-=4 ) {
             data[i-3] *= c;
@@ -460,7 +495,7 @@ function JSImage( _canvas_id, _image_src ) {
             data[i-1] *= c;
         }
 
-        this.draw( cnvs );
+        that.draw( cnvs );
 
     }
 
@@ -470,11 +505,11 @@ function JSImage( _canvas_id, _image_src ) {
      * @param cnvs optional canvas to draw the multiplied image upon.  uses this canvas if none is provided.
      * @param color the color by which to multiply each pixel in the canvas
      */
-    this.multiply = function( cnvs, r, g, b ) {
+    that.multiply = function( cnvs, r, g, b ) {
 
 
         // use this canvas as default
-        if(!cnvs) cnvs = this.canvas;
+        if(!cnvs) cnvs = that.canvas;
 
         r = ( r > 255 ) ? 255 : ( r > 0 ) ? r : 0;
         g = ( g > 255 ) ? 255 : ( g > 0 ) ? g : 0;
@@ -484,7 +519,7 @@ function JSImage( _canvas_id, _image_src ) {
         g = ( g > 1 ) ? g / 255 : g;
         b = ( b > 1 ) ? b / 255 : b;
 
-        var data = this.imagedata.data;
+        var data = that.imagedata.data;
 
         //console.time("Multiply");
         for( var i = data.length-1; i >= 0; i-=4 ) {
@@ -497,7 +532,7 @@ function JSImage( _canvas_id, _image_src ) {
         //console.timeEnd("Multiply");
 
         
-        this.draw( cnvs );
+        that.draw( cnvs );
 
     }
 
