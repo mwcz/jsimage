@@ -43,7 +43,6 @@
  */
 
 function JSImage( _canvas_id, _image_src ) {
-    //console.log("Constructor called: JSImage( \"%s\", \"%s\" )", _canvas_id, _image_src );
 
     /*******************************
      * Private instance variables. *
@@ -92,14 +91,12 @@ function JSImage( _canvas_id, _image_src ) {
         that.width = canvas_element.width = img.width;
         that.height = canvas_element.height = img.height;
         that.canvas.drawImage( img, 0, 0 );
-        //console.time("get image data");
         that.imagedata = that.canvas.getImageData( 
                                 0, // x coord
                                 0, // y coord
                                 canvas_element.width, // width of rectangle to return
                                 canvas_element.height // height of rectangle to return
                                 ); // we only care about the data attribute
-        //console.timeEnd("get image data");
     }
 
 
@@ -142,9 +139,7 @@ function JSImage( _canvas_id, _image_src ) {
 
         var data = that.imagedata;
 
-        //console.time("putting image data");
         that.canvas.putImageData( data, 0, 0 );
-        //console.timeEnd("putting image data");
 
     }
 
@@ -192,11 +187,8 @@ function JSImage( _canvas_id, _image_src ) {
         marquee.setOnUpdateCallback( upd = function() {
             var xywh = marquee.getCoords();
             if( !xywh.width || !xywh.height ) return -1; // selection has 0 area, return error
-            //console.log(xywh);
             var rect = that.getrect( xywh.x1, xywh.y1, xywh.width, xywh.height );
-            //console.log(rect);
             var av = that.avg( rect );
-            //console.log(av);
             document.body.style.background = "rgb(" + av[0] + "," + av[1] + "," + av[2] + ")";
         });
     }
@@ -221,7 +213,7 @@ function JSImage( _canvas_id, _image_src ) {
             case 'r': band = 0; break;
             case 'g': band = 1; break;
             case 'b': band = 2; break;
-            default: //console.log('Invalid channel provided.'); return;
+            default: 
         }
 
         cnvs.fillStyle = background;
@@ -270,11 +262,8 @@ function JSImage( _canvas_id, _image_src ) {
 
         // binning scales
         shrink_x = parseFloat( bins ) / parseFloat( histo_len );
-        //console.log( "binning scale (x): %f", shrink_x );
 
-        //console.log( "histo_len: %d", histo_len );
         var span = parseInt( ( parseFloat( histo_len ) / parseFloat( bins ) ) / 2 ) + 1; // how far to the left and right to "reach" for values to average with
-        //console.log( "span: %d", span );
 
         for( var i = 0; i < bins; i++ ) {
 
@@ -372,25 +361,23 @@ function JSImage( _canvas_id, _image_src ) {
         var VSW = V*S*W;
         var VSU = V*S*U;
 
-        console.time( "hue" );
         for( var i = data.length-1; i >= 0; i-=4 ) {
             r = data[i-3];
             g = data[i-2];
             b = data[i-1];
 
-            data[i-3] = r * ( A+.701*VSU+.168*VSW ) +
-                        g * ( B-.587*VSU+.330*VSW ) +
-                        b * ( C-.114*VSU-.497*VSW ) ;
+            data[i-3] = r * ( A + .701 *VSU + .168 * VSW ) +
+                        g * ( B - .587 *VSU + .330 * VSW ) +
+                        b * ( C - .114 *VSU - .497 * VSW ) ;
 
-            data[i-2] = r * ( A-.299*VSU-.328*VSW )+
-                        g * ( B+.413*VSU+.035*VSW )+
-                        b * ( C-.114*VSU+.292*VSW );
+            data[i-2] = r * ( A - .299 *VSU - .328 * VSW )+
+                        g * ( B + .413 *VSU + .035 * VSW )+
+                        b * ( C - .114 *VSU + .292 * VSW );
 
-            data[i-1] = r * ( A-.3*VSU+1.25*VSW ) +
-                        g * ( B-.588*VSU-1.05*VSW ) +
-                        b * ( C+.886*VSU-.203*VSW );
+            data[i-1] = r * ( A - .3   *VSU + 1.25 * VSW ) +
+                        g * ( B - .588 *VSU - 1.05 * VSW ) +
+                        b * ( C + .886 *VSU - .203 * VSW );
         }
-        console.timeEnd( "hue" );
 
         /*
         var rgb = [0,0,0,0];
@@ -521,7 +508,6 @@ function JSImage( _canvas_id, _image_src ) {
 
         var data = that.imagedata.data;
 
-        //console.time("Multiply");
         for( var i = data.length-1; i >= 0; i-=4 ) {
 
             data[ i - 3 ] = data[ i - 3 ] * r;
@@ -529,7 +515,6 @@ function JSImage( _canvas_id, _image_src ) {
             data[ i - 1 ] = data[ i - 1 ] * b;
 
         }
-        //console.timeEnd("Multiply");
 
         
         that.draw( cnvs );
