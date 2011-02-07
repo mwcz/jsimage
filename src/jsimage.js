@@ -37,6 +37,7 @@
  *
  * "JSImage" is a terrible name.  Help me think of a better one!
  *
+ * @author mwc <mwc@clayto.org>
  * @constructor
  * @param _canvas_id The id of the canvas element.
  * @_image_src The path to the image to be loaded into the canvas.
@@ -524,5 +525,3 @@ function JSImage( _canvas_id, _image_src ) {
 
 
 } // End of JSImage constructor
-
-
