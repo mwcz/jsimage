@@ -1,0 +1,6 @@
+# ignore generated documentation
+docs/html/*
+
+# ignore vim swap files
+*.swp
+*.swo
